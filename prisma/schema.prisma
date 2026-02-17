@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Using Prisma 6 - url/directUrl in datasource is correct
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  CS
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String
+  role      Role     @default(CS)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sentMessages Message[] @relation("SentMessages")
+
+  @@map("users")
+}
+
+model Label {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  order     Int
+  color     String   @default("#6B7280")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts Contact[]
+
+  @@map("labels")
+}
+
+model Contact {
+  id          String   @id @default(uuid()) @db.Uuid
+  waId        String   @unique
+  name        String?
+  phoneNumber String
+  profilePic  String?
+  labelId     String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  label    Label     @relation(fields: [labelId], references: [id])
+  messages Message[]
+
+  @@index([labelId])
+  @@map("contacts")
+}
+
+model Message {
+  id            String        @id @default(uuid()) @db.Uuid
+  waMessageId   String        @unique
+  contactId     String        @db.Uuid
+  senderId      String?       @db.Uuid
+  type          MessageType   @default(TEXT)
+  content       String?
+  mediaUrl      String?
+  caption       String?
+  status        MessageStatus @default(SENT)
+  isFromContact Boolean       @default(true)
+  timestamp     DateTime
+  createdAt     DateTime      @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  sender  User?   @relation("SentMessages", fields: [senderId], references: [id])
+
+  @@index([contactId])
+  @@index([timestamp])
+  @@map("messages")
+}
