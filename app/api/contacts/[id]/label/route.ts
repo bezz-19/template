@@ -20,11 +20,33 @@ export async function PATCH(
       labelId: body.labelId,
     })
 
-    const contact = await prisma.contact.update({
+    // Get current contact to track old label
+    const currentContact = await prisma.contact.findUnique({
       where: { id },
-      data: { labelId },
-      include: { label: true },
+      select: { labelId: true }
     })
+
+    if (!currentContact) {
+      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+    }
+
+    // Update contact label and create history in transaction
+    const [contact] = await prisma.$transaction([
+      prisma.contact.update({
+        where: { id },
+        data: { labelId },
+        include: { label: true },
+      }),
+      prisma.labelHistory.create({
+        data: {
+          contactId: id,
+          fromLabelId: currentContact.labelId,
+          toLabelId: labelId,
+          changedBy: session.userId,
+          reason: body.reason || null,
+        }
+      })
+    ])
 
     return NextResponse.json(contact)
   } catch (error) {

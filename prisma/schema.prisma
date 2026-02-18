@@ -50,7 +50,9 @@ model Label {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  contacts Contact[]
+  contacts      Contact[]
+  historyFrom   LabelHistory[] @relation("FromLabel")
+  historyTo     LabelHistory[] @relation("ToLabel")
 
   @@map("labels")
 }
@@ -65,8 +67,9 @@ model Contact {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  label    Label     @relation(fields: [labelId], references: [id])
-  messages Message[]
+  label         Label          @relation(fields: [labelId], references: [id])
+  messages      Message[]
+  labelHistory  LabelHistory[]
 
   @@index([labelId])
   @@map("contacts")
@@ -92,4 +95,22 @@ model Message {
   @@index([contactId])
   @@index([timestamp])
   @@map("messages")
+}
+
+model LabelHistory {
+  id          String   @id @default(uuid()) @db.Uuid
+  contactId   String   @db.Uuid
+  fromLabelId String   @db.Uuid
+  toLabelId   String   @db.Uuid
+  changedBy   String?  // User ID or "system" or "webhook"
+  reason      String?  // Optional reason for change
+  createdAt   DateTime @default(now())
+
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  fromLabel Label   @relation("FromLabel", fields: [fromLabelId], references: [id])
+  toLabel   Label   @relation("ToLabel", fields: [toLabelId], references: [id])
+
+  @@index([contactId])
+  @@index([createdAt])
+  @@map("label_history")
 }
