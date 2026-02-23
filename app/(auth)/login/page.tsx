@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,21 @@ export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    // Check if already logged in
+    fetch('/api/auth/check')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          router.push('/dashboard')
+        } else {
+          setChecking(false)
+        }
+      })
+      .catch(() => setChecking(false))
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -22,7 +37,7 @@ export default function LoginPage() {
     const result = await loginAction(null, formData)
 
     if (result.success && result.role) {
-      router.push('/dashboard/messages')
+      router.push('/dashboard')
       router.refresh()
     } else if (result.message) {
       setError(result.message)
@@ -31,11 +46,19 @@ export default function LoginPage() {
     setLoading(false)
   }
 
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center">WhatsApp CRM</CardTitle>
+          <CardTitle className="text-center">Dashboard Template</CardTitle>
           <p className="text-center text-sm text-muted-foreground">
             Login ke akun Anda
           </p>
@@ -77,13 +100,6 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Loading...' : 'Login'}
             </Button>
-
-            <p className="text-center text-sm text-muted-foreground">
-              Belum punya akun?{' '}
-              <Link href="/register" className="text-primary hover:underline">
-                Register
-              </Link>
-            </p>
           </form>
         </CardContent>
       </Card>

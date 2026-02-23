@@ -2,7 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Using Prisma 6 - url/directUrl in datasource is correct
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -11,106 +10,68 @@ datasource db {
 
 enum Role {
   ADMIN
-  CS
+  KARYAWAN
+  MAHASISWA
 }
 
-enum MessageType {
-  TEXT
-  IMAGE
-  VIDEO
-  DOCUMENT
-  AUDIO
+enum StatusKepegawaian {
+  TETAP
+  TIDAK_TETAP
 }
 
-enum MessageStatus {
-  SENT
-  DELIVERED
-  READ
-  FAILED
+enum JenisKelamin {
+  LAKI_LAKI
+  PEREMPUAN
 }
 
 model User {
   id        String   @id @default(uuid()) @db.Uuid
   email     String   @unique
   password  String
-  role      Role     @default(CS)
+  role      Role     @default(MAHASISWA)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sentMessages Message[] @relation("SentMessages")
+  profile Profile?
 
   @@map("users")
 }
 
-model Label {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String   @unique
-  order     Int
-  color     String   @default("#6B7280")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Profile {
+  id                  String              @id @default(uuid()) @db.Uuid
+  userId              String              @unique @db.Uuid
+  nip                 String?             @unique // Format: YYYY/MM/XXXX
+  nik                 String?
+  namaLengkap         String?
+  gelarDepan          String?
+  gelarBelakang       String?
+  jabatan             String?
+  statusKepegawaian   StatusKepegawaian?
+  telepon             String?
+  alamat              String?
+  tempatLahir         String?
+  tanggalLahir        DateTime?           @db.Date
+  jenisKelamin        JenisKelamin?
+  fotoProfil          String?
+  tanggalMasuk        DateTime            @default(now())
+  tanggalKeluar       DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
-  contacts      Contact[]
-  historyFrom   LabelHistory[] @relation("FromLabel")
-  historyTo     LabelHistory[] @relation("ToLabel")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("labels")
+  @@map("profiles")
 }
 
-model Contact {
-  id          String   @id @default(uuid()) @db.Uuid
-  waId        String   @unique
-  name        String?
-  phoneNumber String
-  profilePic  String?
-  labelId     String   @db.Uuid
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Prodi {
+  id        String    @id @default(uuid()) @db.Uuid
+  code      String?   @unique
+  nama      String
+  jenjang   String
+  status    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  label         Label          @relation(fields: [labelId], references: [id])
-  messages      Message[]
-  labelHistory  LabelHistory[]
-
-  @@index([labelId])
-  @@map("contacts")
-}
-
-model Message {
-  id            String        @id @default(uuid()) @db.Uuid
-  waMessageId   String        @unique
-  contactId     String        @db.Uuid
-  senderId      String?       @db.Uuid
-  type          MessageType   @default(TEXT)
-  content       String?
-  mediaUrl      String?
-  caption       String?
-  status        MessageStatus @default(SENT)
-  isFromContact Boolean       @default(true)
-  timestamp     DateTime      @db.Timestamptz
-  createdAt     DateTime      @default(now())
-
-  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  sender  User?   @relation("SentMessages", fields: [senderId], references: [id])
-
-  @@index([contactId])
-  @@index([timestamp])
-  @@map("messages")
-}
-
-model LabelHistory {
-  id          String   @id @default(uuid()) @db.Uuid
-  contactId   String   @db.Uuid
-  fromLabelId String   @db.Uuid
-  toLabelId   String   @db.Uuid
-  changedBy   String?  // User ID or "system" or "webhook"
-  reason      String?  // Optional reason for change
-  createdAt   DateTime @default(now())
-
-  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  fromLabel Label   @relation("FromLabel", fields: [fromLabelId], references: [id])
-  toLabel   Label   @relation("ToLabel", fields: [toLabelId], references: [id])
-
-  @@index([contactId])
-  @@index([createdAt])
-  @@map("label_history")
+  @@map("prodis")
 }

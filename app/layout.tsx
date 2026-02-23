@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'WhatsApp CRM',
-  description: 'WhatsApp CRM Kanban System',
+  title: 'Dashboard Template',
+  description: 'Next.js Dashboard Template with Supabase & Prisma',
 }
 
 export default function RootLayout({

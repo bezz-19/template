@@ -13,7 +13,8 @@ const LoginSchema = z.object({
 const RegisterSchema = z.object({
   email: z.string().email({ message: 'Format email tidak valid' }),
   password: z.string().min(6, { message: 'Password minimal 6 karakter' }),
-  role: z.enum(['ADMIN', 'CS']).optional(),
+  role: z.enum(['ADMIN', 'KARYAWAN', 'MAHASISWA']).optional(),
+  token: z.string().optional(),
 })
 
 export async function loginAction(prevState: any, formData: FormData) {
@@ -89,7 +90,19 @@ export async function registerAction(prevState: any, formData: FormData) {
     }
   }
 
-  const { email, password, role } = validatedFields.data
+  const { email, password, role, token } = validatedFields.data
+
+  // Verify token for secret registration
+  if (token) {
+    const validToken = process.env.REGISTRATION_TOKEN
+    if (!validToken || token !== validToken) {
+      return {
+        success: false,
+        message: 'Token registrasi tidak valid.',
+        errors: null,
+      }
+    }
+  }
 
   try {
     const existingUser = await prisma.user.findUnique({
@@ -110,7 +123,7 @@ export async function registerAction(prevState: any, formData: FormData) {
       data: {
         email,
         password: passwordHash,
-        role: role || 'CS',
+        role: role || 'MAHASISWA',
       },
     })
 
