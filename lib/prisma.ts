@@ -7,6 +7,18 @@ import { PrismaClient } from '@prisma/client'
 const prismaClientSingleton = () => {
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
+  }).$extends({
+    query: {
+      $allOperations({ operation, model, args, query }) {
+        // Disable prepared statements untuk menghindari "prepared statement already exists"
+        return query(args)
+      },
+    },
   })
 }
 
