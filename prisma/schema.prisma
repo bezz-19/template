@@ -10,7 +10,8 @@ datasource db {
 
 enum Role {
   ADMIN
-  USER
+  USTADZ
+  SANTRI
 }
 
 model User {
@@ -27,13 +28,50 @@ model User {
 }
 
 model Profile {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @unique @db.Uuid
-  fotoProfil String?
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @db.Uuid
+  fotoProfil    String?
+  namaLengkap   String?
+  nomorInduk    String?  @unique // NIS untuk Santri, NIK untuk Ustadz
+  tempatLahir   String?
+  tanggalLahir  DateTime?
+  jenisKelamin  String?  // L/P
+  alamat        String?
+  nomorTelepon  String?
+  
+  // Khusus Santri
+  namaWali      String?
+  kontakWali    String?
+  kamar         String?
+  asrama        String?
+  tahunMasuk    Int?
+  
+  // Khusus Ustadz
+  bidangKeahlian String?
+  pendidikan     String?
+  
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hafalanProgress HafalanProgress[]
 
   @@map("profiles")
+}
+
+model HafalanProgress {
+  id          String   @id @default(uuid()) @db.Uuid
+  profileId   String   @db.Uuid
+  juz         Int
+  halaman     Int
+  surah       String
+  ayat        String
+  tanggal     DateTime @default(now())
+  status      String   // SETORAN, MUROJA'AH, LULUS
+  catatan     String?
+  ustadzId    String?  @db.Uuid
+  
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  @@map("hafalan_progress")
 }
