@@ -164,12 +164,22 @@ export default function UserList({ users }: { users: User[] }) {
                         <label className="flex items-center space-x-1 cursor-pointer">
                           <input
                             type="radio"
-                            value="USER"
-                            checked={editRole === 'USER'}
+                            value="SANTRI"
+                            checked={editRole === 'SANTRI'}
                             onChange={(e) => setEditRole(e.target.value)}
                             className="w-3 h-3"
                           />
-                          <span className="text-xs">User</span>
+                          <span className="text-xs">Santri</span>
+                        </label>
+                        <label className="flex items-center space-x-1 cursor-pointer">
+                          <input
+                            type="radio"
+                            value="USTADZ"
+                            checked={editRole === 'USTADZ'}
+                            onChange={(e) => setEditRole(e.target.value)}
+                            className="w-3 h-3"
+                          />
+                          <span className="text-xs">Ustadz</span>
                         </label>
                         <label className="flex items-center space-x-1 cursor-pointer">
                           <input

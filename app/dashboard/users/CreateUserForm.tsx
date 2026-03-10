@@ -103,11 +103,20 @@ export default function CreateUserForm() {
                 <input
                   type="radio"
                   name="role"
-                  value="USER"
+                  value="SANTRI"
                   defaultChecked
                   className="w-4 h-4"
                 />
-                <span>User</span>
+                <span>Santri</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="USTADZ"
+                  className="w-4 h-4"
+                />
+                <span>Ustadz</span>
               </label>
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input

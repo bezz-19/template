@@ -13,7 +13,7 @@ const LoginSchema = z.object({
 const RegisterSchema = z.object({
   email: z.string().email({ message: 'Format email tidak valid' }),
   password: z.string().min(6, { message: 'Password minimal 6 karakter' }),
-  role: z.enum(['ADMIN', 'USER']).optional(),
+  role: z.enum(['ADMIN', 'USTADZ', 'SANTRI']).optional(),
   token: z.string().optional(),
 })
 
