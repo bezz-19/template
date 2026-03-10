@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Dashboard Template',
-  description: 'Next.js Dashboard Template with Supabase & Prisma',
+  title: 'Sistem Informasi Pesantren - Tadabbur Al-Qur\'an Amsa001',
+  description: 'Platform digital untuk mengelola data santri, ustadz, dan kegiatan pesantren',
 }
 
 export default function RootLayout({

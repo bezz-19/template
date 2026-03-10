@@ -33,7 +33,7 @@ export default async function DashboardLayout({
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-800">Sistem Informasi Pesantren</h1>
-                <p className="text-xs text-gray-500">Pondok Pesantren Al-Hikmah</p>
+                <p className="text-xs text-gray-500">Pesantren Tadabbur Al-Qur'an Amsa001</p>
               </div>
             </div>
             <div className="flex items-center gap-4">

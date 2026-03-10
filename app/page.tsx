@@ -14,7 +14,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-800">Sistem Informasi Pesantren</h1>
-                <p className="text-xs text-gray-500">Pondok Pesantren Al-Hikmah</p>
+                <p className="text-xs text-gray-500">Pesantren Tadabbur Al-Qur'an Amsa001</p>
               </div>
             </div>
             <Link
@@ -86,7 +86,7 @@ export default function Home() {
 
       <footer className="bg-white border-t mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-600">
-          <p>&copy; 2024 Pondok Pesantren Al-Hikmah. All rights reserved.</p>
+          <p>&copy; 2024 Pesantren Tadabbur Al-Qur'an Amsa001. All rights reserved.</p>
         </div>
       </footer>
     </div>

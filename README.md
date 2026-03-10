@@ -1,6 +1,6 @@
 # Sistem Informasi Pesantren
 
-Platform digital untuk mengelola data santri, ustadz, dan kegiatan Pondok Pesantren Al-Hikmah.
+Platform digital untuk mengelola data santri, ustadz, dan kegiatan Pesantren Tadabbur Al-Qur'an Amsa001.
 
 ## Fitur Utama
 

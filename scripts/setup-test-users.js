@@ -2,13 +2,11 @@
  * Setup Test Users Script
  * 
  * Creates test users for manual testing:
- * - admin@test.com (ADMIN)
- * - karyawan@test.com (KARYAWAN)
+ * - admin@pesantren.com (ADMIN)
+ * - ustadz@pesantren.com (USTADZ)
+ * - santri@pesantren.com (SANTRI)
  * 
  * Usage: node setup-test-users.js
- * 
- * Note: This only creates users in database.
- * For full E2E testing, use manual testing guide.
  */
 
 const { PrismaClient } = require('@prisma/client')
@@ -61,7 +59,7 @@ async function createTestUser(email, password, role) {
 async function main() {
   console.clear()
   log('\n╔════════════════════════════════════════════════════════════╗', 'cyan')
-  log('║          Setup Test Users for E2E Testing                 ║', 'cyan')
+  log('║       Setup Test Users - Sistem Informasi Pesantren       ║', 'cyan')
   log('╚════════════════════════════════════════════════════════════╝\n', 'cyan')
 
   log('Creating test users...', 'yellow')
@@ -69,10 +67,13 @@ async function main() {
 
   try {
     // Create admin user
-    await createTestUser('admin@test.com', 'admin123', 'ADMIN')
+    await createTestUser('admin@pesantren.com', 'admin123', 'ADMIN')
 
-    // Create karyawan user
-    await createTestUser('karyawan@test.com', 'karyawan123', 'KARYAWAN')
+    // Create ustadz user
+    await createTestUser('ustadz@pesantren.com', 'ustadz123', 'USTADZ')
+
+    // Create santri user
+    await createTestUser('santri@pesantren.com', 'santri123', 'SANTRI')
 
     console.log('')
     log('═'.repeat(60), 'cyan')
@@ -81,17 +82,20 @@ async function main() {
     console.log('')
     log('Test Credentials:', 'yellow')
     log('  Admin:', 'cyan')
-    log('    Email: admin@test.com')
+    log('    Email: admin@pesantren.com')
     log('    Password: admin123')
     console.log('')
-    log('  Karyawan:', 'cyan')
-    log('    Email: karyawan@test.com')
-    log('    Password: karyawan123')
+    log('  Ustadz:', 'cyan')
+    log('    Email: ustadz@pesantren.com')
+    log('    Password: ustadz123')
     console.log('')
-    log('You can now test manually in browser:', 'green')
-    log('  1. Start server: bun run dev', 'cyan')
+    log('  Santri:', 'cyan')
+    log('    Email: santri@pesantren.com')
+    log('    Password: santri123')
+    console.log('')
+    log('You can now test in browser:', 'green')
+    log('  1. Start server: npm run dev', 'cyan')
     log('  2. Open: http://localhost:3000/login', 'cyan')
-    log('  3. Follow: MANUAL_TESTING_GUIDE.md', 'cyan')
     console.log('')
   } catch (error) {
     log('\n❌ Setup failed', 'red')
